@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { LogOutIcon, PinIcon, PlusIcon, UserIcon } from "@/components/ui/Icons";
@@ -35,7 +36,7 @@ export function Header({ onAdd, onLogin }: HeaderProps) {
       className="relative z-[1200] flex h-14 shrink-0 items-center justify-between gap-3 border-b border-brand-100 bg-white px-4 md:h-16 md:px-6"
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
-      <a href="/" className="flex items-center gap-2.5">
+      <Link href="/" className="flex items-center gap-2.5">
         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white shadow-sm">
           <PinIcon className="h-5 w-5" />
         </span>
@@ -45,7 +46,7 @@ export function Header({ onAdd, onLogin }: HeaderProps) {
           </span>
           <span className="hidden text-xs text-gray-500 sm:block">Toen &amp; nu, op de kaart</span>
         </span>
-      </a>
+      </Link>
 
       <div className="flex items-center gap-2">
         <button

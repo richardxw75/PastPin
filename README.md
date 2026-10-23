@@ -20,6 +20,14 @@ npm run dev          # http://localhost:3000
 npm run dev:https    # https://<ip-van-je-laptop>:3000 (accepteer het self-signed certificaat)
 ```
 
+## Online via GitHub Pages
+
+De app is volledig statisch (`output: "export"`), dus GitHub Pages kan hem hosten.
+De workflow `.github/workflows/deploy-pages.yml` bouwt en publiceert bij elke push naar `master`.
+
+Eenmalig instellen: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+Daarna staat de app op `https://<gebruikersnaam>.github.io/PastPin/`.
+
 ## Functionaliteit
 
 - **Overzichtskaart** – pins per categorie (groen 📷 = historische foto, oranje 🎬 = video),
