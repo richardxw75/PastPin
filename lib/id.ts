@@ -1,0 +1,5 @@
+/** Unieke id; valt terug op Math.random buiten een secure context (bijv. http://192.168.x.x op je telefoon). */
+export function uid(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}${Math.random().toString(36).slice(2, 10)}`;
+}
