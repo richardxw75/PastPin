@@ -2,10 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
-import { MapContainer, Marker, TileLayer, Tooltip, ZoomControl, useMap, useMapEvents } from "react-leaflet";
+import { MapContainer, Marker, Tooltip, ZoomControl, useMap, useMapEvents } from "react-leaflet";
 import type { LatLng, MediaItem } from "@/lib/types";
 import { LocateIcon } from "@/components/ui/Icons";
 import { draftIcon, mediaIcon, userLocationIcon } from "./markerIcons";
+import { BASE_LAYERS, BaseTileLayer, LayerSwitcher, loadBaseLayer, saveBaseLayer, type BaseLayerId } from "./BaseLayers";
 
 export interface MapViewProps {
   items: MediaItem[];
@@ -94,6 +95,37 @@ export default function MapView({ items, selectedId, onSelect, placing, draftLoc
   const placingRef = useRef(placing);
   placingRef.current = placing;
 
+  const [baseLayer, setBaseLayer] = useState<BaseLayerId>(loadBaseLayer);
+  const [failedLayers, setFailedLayers] = useState<BaseLayerId[]>([]);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!notice) return;
+    const t = setTimeout(() => setNotice(null), 8000);
+    return () => clearTimeout(t);
+  }, [notice]);
+
+  const chooseLayer = (id: BaseLayerId) => {
+    setBaseLayer(id);
+    setFailedLayers((f) => f.filter((x) => x !== id));
+    setNotice(null);
+    saveBaseLayer(id);
+  };
+
+  // Valt automatisch terug op de volgende kaartdienst als de huidige niet laadt.
+  const onLayerUnavailable = () => {
+    const failed = [...failedLayers, baseLayer];
+    setFailedLayers(failed);
+    const current = BASE_LAYERS.find((l) => l.id === baseLayer)!;
+    const next = BASE_LAYERS.find((l) => !failed.includes(l.id));
+    if (next) {
+      setBaseLayer(next.id);
+      setNotice(`${current.sub} is niet bereikbaar; overgeschakeld naar ${next.sub}.`);
+    } else {
+      setNotice("Geen enkele kaartdienst is bereikbaar. Controleer je internetverbinding.");
+    }
+  };
+
   return (
     <MapContainer
       center={NL_CENTER}
@@ -102,12 +134,16 @@ export default function MapView({ items, selectedId, onSelect, placing, draftLoc
       className="h-full w-full"
       worldCopyJump
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-        subdomains="abcd"
-        maxZoom={20}
-      />
+      <BaseTileLayer key={baseLayer} id={baseLayer} onUnavailable={onLayerUnavailable} />
+      <LayerSwitcher value={baseLayer} onChange={chooseLayer} />
+      {notice && (
+        <div
+          role="status"
+          className="absolute left-1/2 top-[124px] z-[1000] w-[min(90%,28rem)] -translate-x-1/2 animate-fade-in rounded-xl bg-gray-900/90 px-4 py-2.5 text-center text-sm text-white shadow-panel md:bottom-6 md:top-auto"
+        >
+          {notice}
+        </div>
+      )}
       <ZoomControl position="bottomleft" />
       <LocateButton />
       <ClickHandler placing={placing} onDraftLocation={onDraftLocation} />

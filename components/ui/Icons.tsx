@@ -125,3 +125,10 @@ export const CheckIcon = (p: IconProps) => (
     <path d="M20 6 9 17l-5-5" />
   </Icon>
 );
+
+export const LayersIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="m12 2 10 5-10 5L2 7l10-5Z" />
+    <path d="m2 12 10 5 10-5M2 17l10 5 10-5" />
+  </Icon>
+);

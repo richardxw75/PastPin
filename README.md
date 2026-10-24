@@ -106,4 +106,5 @@ vervangen worden zonder de UI aan te passen.
 - De voorbeeldpins gebruiken **gegenereerde illustraties**, geen echte archieffoto's, en
   één CC0-voorbeeldvideo van MDN. Vervang ze in `lib/seed.ts` door echt materiaal
   (met juiste licenties/bronvermelding).
-- Kaarttegels: CARTO Voyager op basis van OpenStreetMap (internet vereist).
+- Kaartlagen zonder API-sleutel: OpenStreetMap (standaard), CARTO Voyager en Esri-luchtfoto.
+  Kies via de laagknop op de kaart; is een dienst onbereikbaar, dan schakelt de app automatisch over.
